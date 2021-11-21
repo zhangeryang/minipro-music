@@ -1,0 +1,16 @@
+.header .title {
+    color: #666;
+    font-size: 32rpx;
+}
+
+.header .description {
+    font-size: 28rpx;
+}
+
+.header .getmore {
+    float: right;
+    font-size: 22rpx;
+    padding: 10rpx;
+    border: 1rpx solid #333;
+    border-radius: 30rpx;
+}

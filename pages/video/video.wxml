@@ -1,0 +1,89 @@
+<!--pages/video/video.wxml-->
+<view class="video-container">
+    <!-- 头部区域 -->
+    <view class="header">
+        <image src="/static/img/video/video.jpg"></image>
+        <view class="search" bindtap="toSearch">
+            搜索音乐
+        </view>
+        <image src="/static/img/logo.png"></image>
+    </view>
+
+    <!-- 导航区域 
+        scroll-into-view: 设置可滚动
+        scroll-with-animation：设置滚动效果
+    -->
+    <scroll-view 
+        scroll-x 
+        class="nav-scroll" 
+        enable-flex 
+        scroll-into-view="{{'scroll' + navId}}" 
+        scroll-with-animation>
+        <view id="{{'scroll' + item.id}}" class="nav-item" wx:for="{{videoGroupList}}" wx:key="id">
+            <view 
+                class="nav-content {{navId === item.id ? 'active' : ''}}" 
+                bindtap="changeNav" 
+                id="{{item.id}}" 
+                data-id="{{item.id}}">
+                {{item.name}}
+            </view>
+        </view>
+    </scroll-view>
+
+    <!-- 视频列表区域 -->
+    <!--
+        实现下拉刷新
+        refresher-enabled、bindrefresherrefresh、refresher-triggered
+        上拉触底，继续加载，实现分页加载
+        bindscrolltolower
+    -->
+    <scroll-view
+        scroll-y
+        class="video-scroll"
+        refresher-enabled
+        bindrefresherrefresh="handleRefresher"
+        refresher-triggered="{{isTriggered}}"
+        bindscrolltolower="handleToLower">
+        <view class="video-item" wx:for="{{videoList}}" wx:key="id">
+            <!--
+                poster: 设置封面
+                object-fit： 封面与视频大小不一致时
+                bindplay: 播放事件
+                bindtimeupdate：监听视频播放进度
+                handleEnded: 播放结束
+            -->
+            <video
+                class="common"
+                wx:if='{{videoId === item.data.vid}}'
+                src="{{item.data.urlInfo.url}}"
+                id="{{item.data.vid}}"
+                poster="{{item.data.coverUrl}}"
+                object-fit="cover"
+                bindplay="handlePlay"
+                bindtimeupdate="handleTimeUpdate"
+                bindended="handleEnded">
+            </video>
+
+            <!--https://developers.weixin.qq.com/community/develop/doc/000e4ef22583d8961919efb6b56009-->
+            <!-- 
+                性能优化：使用image图片代替video标签
+                该视频ID = 当前播放的videoId 时，展示video组件，否则展示image组件
+            -->
+            <image 
+                class="common"
+                wx:else
+                id="{{item.data.vid}}" 
+                src="{{item.data.coverUrl}}"
+                bindtap="handlePlay">
+            </image>
+
+            <view class="footer">
+                <view class="content">{{item.data.title}}</view>
+                <button open-type="share" class="item btn">
+                    <text class="iconfont icon-fenxiang"></text>
+                </button>
+            </view>
+            
+        </view>
+    </scroll-view>
+</view>
